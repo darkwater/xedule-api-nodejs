@@ -39,12 +39,12 @@ app.get('/', function (req, res)
 {
     console.log(req.query);
     if (req.query.html)
-        fs.readFile(__dirname + '/documentation.md', function (err, data)
+        fs.readFile(__dirname + '/README.md', function (err, data)
         {
             res.status(200).end(markdown.toHTML(data.toString()));
         });
 
-    else res.sendFile(__dirname + '/documentation.md');
+    else res.sendFile(__dirname + '/README.md');
 });
 
 app.get('/organisations.json', function (req, res)
