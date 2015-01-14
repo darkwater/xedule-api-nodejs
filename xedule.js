@@ -1,4 +1,5 @@
-var app      = require('express')();
+var express  = require('express');
+var app      = express();
 var server   = require('http').createServer(app);
 
 var fs       = require('fs');
@@ -16,13 +17,18 @@ mongoose.connect('mongodb://localhost:2710/xedule');
 fetch.organisations();
 
 
-fs.unlink('http.sock', function ()
+var sockpath = __dirname + '/http.sock';
+fs.unlink(sockpath, function ()
 {
-    app.listen(__dirname + '/http.sock');
+    app.listen(sockpath);
+    fs.chmod(sockpath, 0775);
 });
 
 app.use('*', function (req, res, next)
 {
+    // Log all the requests!
+    console.log(new Date(), req.url);
+
     // Set empty arguments to true so you can just do things like ?reload
     for (var key in req.query) if (req.query[key] === '') req.query[key] = true;
 
@@ -37,7 +43,6 @@ app.use('*', function (req, res, next)
 
 app.get('/', function (req, res)
 {
-    console.log(req.query);
     if (req.query.html)
         fs.readFile(__dirname + '/README.md', function (err, data)
         {
@@ -205,9 +210,12 @@ app.route('/weekschedule.:attendee.json')
 })
 .get(function (req, res)
 {
-    var out = req.schedule;
+    var out = req.schedule.days;
 
     utils.removeMetadata(out);
 
     res.end(JSON.stringify(out, null, req.query.indent));
 });
+
+
+app.use(express.static(__dirname + '/static'));
