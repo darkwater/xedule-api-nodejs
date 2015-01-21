@@ -27,7 +27,7 @@ fs.unlink(sockpath, function ()
 app.use('*', function (req, res, next)
 {
     // Log all the requests!
-    console.log(new Date(), req.url);
+    console.log(new Date(), req.originalUrl);
 
     // Set empty arguments to true so you can just do things like ?reload
     for (var key in req.query) if (req.query[key] === '') req.query[key] = true;
@@ -196,7 +196,7 @@ app.route('/weekschedule.:attendee.json')
             {
                 fetch.schedule(req.params.attendee, req.query.year, req.query.week, function (schedule)
                 {
-                    req.schedule = schedule;
+                    req.schedule = schedule.toObject();
                     next();
                 });
             }

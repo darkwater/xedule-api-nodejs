@@ -61,6 +61,7 @@ schemes.daySchedule = new mongoose.Schema(
             classes:        [ String ], // All attendees are stored in here for sorting
             staffs:         [ String ],
             facilities:     [ String ],
+            attendees:      [ Number ],
             description:    String
         }
     ]
@@ -84,7 +85,7 @@ schemes.daySchedule.pre('save', function (next)
             {
                 name: attendee
             },
-            'type',
+            'id type',
             function (err, data)
             {
                 if (data.type == models.Attendee.TYPE_CLASS)
@@ -92,6 +93,11 @@ schemes.daySchedule.pre('save', function (next)
 
                 if (data.type == models.Attendee.TYPE_STAFF)
                     event.staffs.push(attendee);
+
+                if (data.type == models.Attendee.TYPE_FACILITY)
+                    event.facilities.push(attendee);
+
+                event.attendees.push(data.id);
 
                 done++;
 

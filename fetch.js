@@ -196,12 +196,14 @@ fetch.schedule = function (attendeeId, year, week, callback)
                         events: []
                     };
 
+                if (curevent.attendees == null) curevent.attendees = [];
+                if (curevent.location.length >= 1) curevent.attendees = curevent.attendees.concat(curevent.location.split('\\, '));
+
                 var eventObj =
                 {
                     start: start.getHours() + ':' + utils.padZero(start.getMinutes()),
                     end: end.getHours() + ':' + utils.padZero(end.getMinutes()),
                     classes: curevent.attendees,
-                    facilities: curevent.location.length >= 1 ? curevent.location.split('\\, ') : [],
                     description: curevent.summary
                 };
 
@@ -239,8 +241,9 @@ fetch.schedule = function (attendeeId, year, week, callback)
             days: days
         };
 
-        new objects.models.WeekSchedule(schedule).save();
-
-        callback(schedule);
+        new objects.models.WeekSchedule(schedule).save(function (err, schedule)
+        {
+            callback(schedule);
+        });
     });
 };
