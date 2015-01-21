@@ -219,7 +219,10 @@ fetch.schedule = function (attendeeId, year, week, callback)
                 if (key.substring(0, 8) == 'ATTENDEE')
                 {
                     if (!curevent.attendees) curevent.attendees = [];
-                    curevent.attendees.push(key.substring(12));
+                    var name = key.substring(12);
+                    name = name.replace(/^"|"$/g, ''); // fuck off stenden
+                    console.log(name);
+                    curevent.attendees.push(name);
                 }
                 else curevent[key.toLowerCase()] = value;
             }
