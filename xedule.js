@@ -29,6 +29,9 @@ app.use('*', function (req, res, next)
     // Log all the requests!
     console.log(new Date(), req.originalUrl);
 
+    // Allow requests from other origins
+    res.set("Access-Control-Allow-Origin", "*");
+
     // Set empty arguments to true so you can just do things like ?reload
     for (var key in req.query) if (req.query[key] === '') req.query[key] = true;
 
