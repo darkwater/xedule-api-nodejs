@@ -163,12 +163,12 @@ fetch.attendees = function (locationId, callback)
 
                 fetch.page('/Attendee/ScheduleCurrent/' + results[1].replace(/&amp;/g, '&'), function (attpage)
                 {
-                    var regex = /<option value="(20[0-9]{2}\/[0-9]{1,2})">/g;
+                    var regex = /<option( selected="selected")? value="(20[0-9]{2}\/[0-9]{1,2})">/g;
                     var weeks = [];
 
                     while ((results = regex.exec(attpage)) !== null)
                     {
-                        weeks.push(results[1]);
+                        weeks.push(results[2]);
                     }
 
                     console.log(weeks);
