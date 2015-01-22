@@ -119,10 +119,21 @@ fetch.locations = function (organisationId, callback)
 
 fetch.attendees = function (locationId, callback)
 {
+    var needToGetWeeks = false;
+    var nowGettingWeeks = false;
+
+    objects.models.Location.findOne({ id: locationId }, function (err, loc)
+    {
+        if (loc.weeks.length == 0)
+        {
+            needToGetWeeks = true;
+        }
+    });
+
     fetch.page('/OrganisatorischeEenheid/Attendees/' + locationId, function (page)
     {
-        var results;           //             ,1: Attendee id ,2: Name          ,3: Type
-        var regex = new RegExp('option value="([0-9]+)\\?Code=([^&]+)&amp;attId=([1-3])&amp;OreId=' + locationId + '"', 'g');
+        var results;           //      1: URL, ,2: Attendee id ,3: Name          ,4: Type
+        var regex = new RegExp('option value="(([0-9]+)\\?Code=([^&]+)&amp;attId=([1-3])&amp;OreId=' + locationId + ')"', 'g');
 
         var attendees = [];
         var count = 0;
@@ -146,12 +157,34 @@ fetch.attendees = function (locationId, callback)
         {
             count++;
 
+            if (needToGetWeeks && !nowGettingWeeks)
+            {
+                nowGettingWeeks = true;
+
+                fetch.page('/Attendee/ScheduleCurrent/' + results[1].replace(/&amp;/g, '&'), function (attpage)
+                {
+                    var regex = /<option value="(20[0-9]{2}\/[0-9]{1,2})">/g;
+                    var weeks = [];
+
+                    while ((results = regex.exec(attpage)) !== null)
+                    {
+                        weeks.push(results[1]);
+                    }
+
+                    console.log(weeks);
+
+                    objects.models.Location.findOneAndUpdate(
+                        { id: locationId },
+                        { $set: { weeks: weeks } }).exec();
+                });
+            }
+
             var attendee =
             {
-                id: results[1],
-                name: qs.unescape(results[2]),
+                id: results[2],
+                name: qs.unescape(results[3]),
                 location: locationId,
-                type: results[3]
+                type: results[4]
             };
 
             attendees.push(attendee);
@@ -221,7 +254,6 @@ fetch.schedule = function (attendeeId, year, week, callback)
                     if (!curevent.attendees) curevent.attendees = [];
                     var name = key.substring(12);
                     name = name.replace(/^"|"$/g, ''); // fuck off stenden
-                    console.log(name);
                     curevent.attendees.push(name);
                 }
                 else curevent[key.toLowerCase()] = value;

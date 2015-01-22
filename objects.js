@@ -23,7 +23,8 @@ schemes.location = new mongoose.Schema(
 {
     id:             Number,
     organisation:   Number,
-    name:           String
+    name:           String,
+    weeks:          [ String ]
 });
 
 models.Location = mongoose.model('Location', schemes.location);

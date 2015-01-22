@@ -89,7 +89,7 @@ app.route('/locations.:org.json')
         {
             organisation: req.params.org
         },
-        'id name',
+        'id name weeks',
         function (err, locations)
         {
             if (err) throw err; // TODO: Catch errors like these
@@ -130,7 +130,7 @@ app.route('/attendees.:loc.json')
 {
     if (req.query.reload)
     {
-        fetch.locations(req.params.loc, function (attendees)
+        fetch.attendees(req.params.loc, function (attendees)
         {
             req.attendees = attendees;
             next();
