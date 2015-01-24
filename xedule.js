@@ -13,6 +13,8 @@ var utils    = require('./utils.js');
 
 mongoose.connect('mongodb://localhost:2710/xedule');
 
+app.set('trust proxy', true);
+
 
 fetch.organisations();
 
@@ -27,7 +29,7 @@ fs.unlink(sockpath, function ()
 app.use('*', function (req, res, next)
 {
     // Log all the requests!
-    console.log(new Date(), req.originalUrl);
+    console.log(new Date(), req.ip, req.originalUrl);
 
     // Allow requests from other origins
     res.set("Access-Control-Allow-Origin", "*");
