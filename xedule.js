@@ -23,13 +23,13 @@ var sockpath = __dirname + '/http.sock';
 fs.unlink(sockpath, function ()
 {
     app.listen(sockpath);
-    fs.chmod(sockpath, 0775);
+    fs.chmod(sockpath, 0777);
 });
 
 app.use('*', function (req, res, next)
 {
     // Log all the requests!
-    console.log(new Date(), req.ip, req.originalUrl);
+    console.log(new Date(), req.ip || req.headers['x-real-ip'], req.originalUrl);
 
     // Allow requests from other origins
     res.set("Access-Control-Allow-Origin", "*");
