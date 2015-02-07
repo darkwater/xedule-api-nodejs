@@ -89,16 +89,19 @@ schemes.daySchedule.pre('save', function (next)
             'id type',
             function (err, data)
             {
-                if (data.type == models.Attendee.TYPE_CLASS)
-                    event.classes.push(attendee);
+                if (data != null)
+                {
+                    if (data.type == models.Attendee.TYPE_CLASS)
+                        event.classes.push(attendee);
 
-                if (data.type == models.Attendee.TYPE_STAFF)
-                    event.staffs.push(attendee);
+                    if (data.type == models.Attendee.TYPE_STAFF)
+                        event.staffs.push(attendee);
 
-                if (data.type == models.Attendee.TYPE_FACILITY)
-                    event.facilities.push(attendee);
+                    if (data.type == models.Attendee.TYPE_FACILITY)
+                        event.facilities.push(attendee);
 
-                event.attendees.push(data.id);
+                    event.attendees.push(data.id);
+                }
 
                 done++;
 
