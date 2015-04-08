@@ -201,7 +201,7 @@ app.route('/weekschedule.:attendee.json')
             {
                 fetch.schedule(req.params.attendee, req.query.year, req.query.week, function (schedule)
                 {
-                    req.schedule = schedule.toObject();
+                    req.schedule = schedule;
                     next();
                 });
             }

@@ -98,7 +98,8 @@ fetch.locations = function (organisationId, callback)
             {
                 id: results[1],
                 name: qs.unescape(results[2]),
-                organisation: organisationId
+                organisation: organisationId,
+                weeks: []
             };
 
             locations.push(location);
@@ -276,7 +277,7 @@ fetch.schedule = function (attendeeId, year, week, callback)
             days: days
         };
 
-        new objects.models.WeekSchedule(schedule).save(function (err, schedule)
+        new objects.models.WeekSchedule(schedule).save(function (err, fuck)
         {
             callback(schedule);
         });
